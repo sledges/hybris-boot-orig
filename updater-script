@@ -12,7 +12,7 @@ ui_print("    /data -> %DATA_PART%");
 ui_print("========================================");
 ui_print("");
 
-assert(getprop("ro.product.device") == "%DEVICE%" || getprop("ro.build.product") == "%DEVICE%" || getprop("ro.cm.device") == "%DEVICE%");
+%ASSERT_DEVICE%
 
 ui_print("Device check succeeded, mounting filesystems ...");
 mount("ext4", "EMMC", "%DATA_PART%", "/data");
@@ -23,8 +23,8 @@ ui_print("Copying installation script ...");
 package_extract_file("updater-unpack.sh", "/tmp/updater-unpack.sh");
 
 ui_print("Running installation script ...");
-set_perm(0, 0, 755, "/tmp/updater-unpack.sh");
-run_program("/tmp/updater-unpack.sh");
+%SET_PERMISSIONS%
+run_program("/tmp/updater-unpack.sh") == "0" || abort("Failed to extract filesystem!");
 
 ui_print("Flashing hybris-boot.img ...");
 package_extract_file("hybris-boot.img", "%BOOT_PART%");
